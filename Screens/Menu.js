@@ -22,6 +22,7 @@ export default function Menu({ navigation, route }) {
     if(isFocused == true)
     {
       setTabDisplay("flex");
+      setHeaderState(true);
     }
   });
   const [data, setData] = useState([
@@ -86,10 +87,10 @@ export default function Menu({ navigation, route }) {
   };
 
   const { tabDisplay, setTabDisplay } = useContext(TabDisplayContext);
-  
+  const {headerState, setHeaderState} = useContext(TabDisplayContext);
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="default" />
+      
       <View style={styles.myList}>
         <FlatList
           style={{ }}

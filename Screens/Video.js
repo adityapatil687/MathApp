@@ -1,6 +1,6 @@
 import { StatusBar } from "react-native";
-import { StyleSheet, Text, View, Image, SafeAreaView, FlatList } from "react-native";
-
+import { StyleSheet, Text, View, Image, FlatList } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 const DATA = [
   {
     id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
@@ -25,7 +25,7 @@ const DATA = [
 export default function Video() {
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="default" />
+      
       {/* <Text>Video</Text> */}
       <FlatList
         data={DATA}

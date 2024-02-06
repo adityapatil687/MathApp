@@ -1,5 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import auth from "@react-native-firebase/auth";
+import { GoogleSignin, statusCodes } from "@react-native-google-signin/google-signin";
 import {
   StyleSheet,
   Text,
@@ -8,42 +9,100 @@ import {
   Pressable,
   TouchableWithoutFeedback,
   Keyboard,
+  SafeAreaView
 } from "react-native";
 import { TextInput } from "react-native-paper";
 
 import MyButton from "../components/button";
 import SocialLogin from "../components/socialLoginBtn";
-
-import { UserDataContext } from "../context/UserDataContextProvider";
-
-
+import {  } from "react-native-safe-area-context";
 
 export default function Login({ navigation }) {
-  const [initializing, setInitializing] = useState(true);
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
-  const { userData, setUserData } = useContext(UserDataContext);
 
-  useEffect(()=>{},[])
+  useEffect(() => {
+    // Check if user is already signed in
+    const unsubscribe = auth().onAuthStateChanged((user) => {
+      if (user) {
+        // User is signed in, navigate to TabNav
+        navigation.navigate("TabNav");
+      }
+    });
+
+    // Unsubscribe from the listener when the component unmounts
+    return unsubscribe;
+  }, [navigation]);
+
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId:
+        "1045187514628-nsqi06enmplpf40j2ika834climb1lp7.apps.googleusercontent.com",
+      forceCodeForRefreshToken: true,
+      offlineAccess: true
+    });
+  }, []);
 
   const loginInBtnEvent = () => {
     if (email.trim() === "" || pass.trim() === "") {
       alert("Please enter both email and password");
       return;
     } else {
-     
+      auth()
+        .signInWithEmailAndPassword(email, pass)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          if (user.emailVerified) {
+            navigation.navigate("TabNav");
+          } else {
+            alert("Please verify your email before signing in.");
+            auth().signOut(); // Sign out the user if email is not verified
+          }
+        })
+        .catch((error) => {
+          if (error.code === "auth/user-not-found") {
+            alert("No user found with this email address!");
+          } else if (error.code === "auth/wrong-password") {
+            alert("Incorrect password!");
+          } else {
+            alert(error);
+          }
+        });
     }
   };
 
-  const socialLoginBtnEvent = (str) => {
+  const socialLoginBtnEvent = async () => {
     // Perform your social login logic here
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      const googleCredential = auth.GoogleAuthProvider.credential(
+        userInfo.idToken
+      );
+      await auth().signInWithCredential(googleCredential);
+      navigation.navigate("TabNav");
+    } catch (error) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        // User cancelled the sign-in flow
+        console.log('User cancelled the sign-in flow');
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        // Another sign-in operation is in progress
+        console.log('Another sign-in operation is in progress');
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        // Play services not available or outdated
+        console.log('Play services not available or outdated');
+      } else {
+        // Some other error occurred
+        console.error('Google Sign-In Error:', error);
+      }
+    }
   };
 
   return (
     <>
-      <StatusBar barStyle="default" />
+      
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
           <View style={styles.TextInputGroup}>
             <TextInput
               label="Email"
@@ -71,6 +130,9 @@ export default function Login({ navigation }) {
             />
           </View>
           <Pressable
+            onPress={() => {
+              navigation.navigate("Signup");
+            }}
             style={styles.signupContainer}
             children={({ pressed }) => (
               <>
@@ -82,7 +144,7 @@ export default function Login({ navigation }) {
               </>
             )}
           />
-        </View>
+        </SafeAreaView>
       </TouchableWithoutFeedback>
     </>
   );

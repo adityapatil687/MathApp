@@ -1,11 +1,9 @@
-const genAI = new GoogleGenerativeAI("AIzaSyDdlrlZWPvQwCMU6KonxOY79Rw-gFYtLcA"); // Replace with your actual API key
 import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
+import { View, Text, FlatList, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator, SafeAreaView } from "react-native";
 import { StatusBar } from "react-native";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { SafeAreaView } from "react-native-safe-area-context";
-
 const ChatBot = () => {
+  const genAI = new GoogleGenerativeAI("AIzaSyDdlrlZWPvQwCMU6KonxOY79Rw-gFYtLcA"); // Replace with your actual API key
   const [text, updateText] = useState("");
   const [chatData, updateChatData] = useState([
     { message: 'Welcome to the ChatBot!', id: '0', style: styles.serverSide, bubble: styles.serverMessage },
@@ -57,10 +55,9 @@ const ChatBot = () => {
   };
 
   return (
-    
     <View style={styles.container}>
-      <StatusBar barStyle="default" />
-      <SafeAreaView >
+      
+      <SafeAreaView style={{ flex: 1 }}>
         {/* Chats */}
         <FlatList
           data={chatData}
@@ -116,7 +113,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
   },
   clientMessage: {
-   
     color: "black",
     padding: 10,
     fontSize: 15,

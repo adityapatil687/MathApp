@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from "react";
+import React, { useContext, useEffect } from "react";
 import {
   Text,
   View,
@@ -6,14 +6,16 @@ import {
   Pressable,
   StatusBar,
   KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import Card from "../components/card";
 import { TabDisplayContext } from "../context/TabDisplayContextProvider";
-import { useIsFocused } from '@react-navigation/native';
+import { useIsFocused } from "@react-navigation/native";
 
 export default function ModeSelect({ navigation, route }) {
   const { operation } = route.params;
   const { tabDisplay, setTabDisplay } = useContext(TabDisplayContext);
+  const { headerState, setHeaderState } = useContext(TabDisplayContext);
 
   const navScreenFunction = (str) => {
     if (str == "Perfect Number" || str == "Float Number") {
@@ -25,10 +27,10 @@ export default function ModeSelect({ navigation, route }) {
   };
   const isFocused = useIsFocused();
   useEffect(() => {
-    if(isFocused == true)
-      {
-        setTabDisplay("none");
-      }
+    if (isFocused == true) {
+      setTabDisplay("none");
+      setHeaderState(false);
+    }
   });
   return (
     <KeyboardAvoidingView
@@ -36,7 +38,6 @@ export default function ModeSelect({ navigation, route }) {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <>
-      <StatusBar barStyle="default" />
         <View style={styles.innerContainer}>
           <Text style={styles.modeSelectLabel}>Select one type</Text>
           <View style={styles.choiceHorizontal}>
@@ -63,7 +64,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-   // backgroundColor: "#ffffff",
+    // backgroundColor: "#ffffff",
   },
   innerContainer: {
     flex: 1,

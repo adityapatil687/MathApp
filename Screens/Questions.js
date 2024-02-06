@@ -12,6 +12,7 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 import { useState, useEffect, useRef } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Questions({ navigation, route }) {
   const { mode } = route.params;
@@ -262,12 +263,12 @@ export default function Questions({ navigation, route }) {
 
   return (
     <>
-    <StatusBar barStyle="default" />
+    
       <TouchableWithoutFeedback
         onPress={Keyboard.dismiss}
         style={styles.container}
       >
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
           <Text style={styles.questionLable}>
             Questions {questionCounter}/15
           </Text>
@@ -292,7 +293,7 @@ export default function Questions({ navigation, route }) {
             <></>
           )}
 
-        </View>
+        </SafeAreaView>
       </TouchableWithoutFeedback>
           {/*  Answer Box */}
       {currentIndex == operands - 1 &&

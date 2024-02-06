@@ -15,6 +15,8 @@ import { useState, useContext } from "react";
 
 export default function TabNav({ navigation }) {
   const {tabDisplay, setTabDisplay} = useContext(TabDisplayContext);
+  const { headerState, setHeaderState } = useContext(TabDisplayContext);
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -50,7 +52,7 @@ export default function TabNav({ navigation }) {
       <Tab.Screen
         name="Home"
         component={HomeNav}
-        options={{ headerShown: false }}
+        options={{ headerShown: headerState, title: 'Select exercise', tabBarLabel: 'Home' }}
       />
       <Tab.Screen
         name="Profile"

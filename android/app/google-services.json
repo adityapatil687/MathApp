@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1045187514628",
+    "project_id": "myabacus0101",
+    "storage_bucket": "myabacus0101.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1045187514628:android:b83ef4b178e53bbe400051",
+        "android_client_info": {
+          "package_name": "com.abacus"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1045187514628-5708hnghqn9iugh9us1074pc6jdugikf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.abacus",
+            "certificate_hash": "1909c56cd4978c849c87a3434042fca38eca16c7"
+          }
+        },
+        {
+          "client_id": "1045187514628-nsqi06enmplpf40j2ika834climb1lp7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1EM7oUQLhSNfdfJtmb0yCvVyVuSyN6_k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1045187514628-nsqi06enmplpf40j2ika834climb1lp7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -8,6 +8,7 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
+  Platform
 } from "react-native";
 import { useState, useContext, useEffect } from "react";
 
@@ -121,7 +122,7 @@ export default function Configure({ navigation, route }) {
         style={styles.container}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <StatusBar barStyle="default" />
+        
         <View style={styles.fromTop}>
           <Text style={styles.myLable}>Number of Digits</Text>
           <View style={styles.innerContainer}>
