@@ -1,6 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import auth from "@react-native-firebase/auth";
-import { GoogleSignin, statusCodes } from "@react-native-google-signin/google-signin";
+import {
+  GoogleSignin,
+  statusCodes,
+} from "@react-native-google-signin/google-signin";
 import {
   StyleSheet,
   Text,
@@ -9,37 +12,28 @@ import {
   Pressable,
   TouchableWithoutFeedback,
   Keyboard,
-  SafeAreaView
+  SafeAreaView,
 } from "react-native";
 import { TextInput } from "react-native-paper";
 
 import MyButton from "../components/button";
 import SocialLogin from "../components/socialLoginBtn";
-import {  } from "react-native-safe-area-context";
+import {} from "react-native-safe-area-context";
+
+import { UserStateContext } from "../context/UserStateContextProvider";
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
 
-  useEffect(() => {
-    // Check if user is already signed in
-    const unsubscribe = auth().onAuthStateChanged((user) => {
-      if (user) {
-        // User is signed in, navigate to TabNav
-        navigation.navigate("TabNav");
-      }
-    });
-
-    // Unsubscribe from the listener when the component unmounts
-    return unsubscribe;
-  }, [navigation]);
+  const { isSignedIn, setIsSignedIn } = useContext(UserStateContext);
 
   useEffect(() => {
     GoogleSignin.configure({
       webClientId:
         "1045187514628-nsqi06enmplpf40j2ika834climb1lp7.apps.googleusercontent.com",
       forceCodeForRefreshToken: true,
-      offlineAccess: true
+      offlineAccess: true,
     });
   }, []);
 
@@ -53,7 +47,8 @@ export default function Login({ navigation }) {
         .then((userCredential) => {
           const user = userCredential.user;
           if (user.emailVerified) {
-            navigation.navigate("TabNav");
+            // navigation.navigate("TabNav");
+            setIsSignedIn(true);
           } else {
             alert("Please verify your email before signing in.");
             auth().signOut(); // Sign out the user if email is not verified
@@ -80,27 +75,27 @@ export default function Login({ navigation }) {
         userInfo.idToken
       );
       await auth().signInWithCredential(googleCredential);
-      navigation.navigate("TabNav");
+      // navigation.navigate("TabNav");
+      setIsSignedIn(true);
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         // User cancelled the sign-in flow
-        console.log('User cancelled the sign-in flow');
+        console.log("User cancelled the sign-in flow");
       } else if (error.code === statusCodes.IN_PROGRESS) {
         // Another sign-in operation is in progress
-        console.log('Another sign-in operation is in progress');
+        console.log("Another sign-in operation is in progress");
       } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
         // Play services not available or outdated
-        console.log('Play services not available or outdated');
+        console.log("Play services not available or outdated");
       } else {
         // Some other error occurred
-        console.error('Google Sign-In Error:', error);
+        console.error("Google Sign-In Error:", error);
       }
     }
   };
 
   return (
     <>
-      
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <SafeAreaView style={styles.container}>
           <View style={styles.TextInputGroup}>

@@ -1,9 +1,10 @@
 import * as React from "react";
 import { Avatar, Button, Card, Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 
 import auth from "@react-native-firebase/auth";
+import { UserStateContext } from "../context/UserStateContextProvider";
 
 const key = (props) => <Avatar.Icon {...props} icon="key" />;
 const door = (props) => <Avatar.Icon {...props} icon="logout" />;
@@ -11,6 +12,7 @@ const door = (props) => <Avatar.Icon {...props} icon="logout" />;
 function UserProf({ navigation }) {
  
   const [currentUser, setCurrentUser] = useState(null);
+  const { isSignedIn, setIsSignedIn } = useContext(UserStateContext);
 
   useEffect(() => {
     const unsubscribe = auth().onAuthStateChanged((user) => {
@@ -66,7 +68,7 @@ function UserProf({ navigation }) {
         onPress={() => {
           auth()
             .signOut()
-            .then(() => navigation.navigate("Login"));
+            .then(() => setIsSignedIn(false));
         }}
       >
         <Card.Title

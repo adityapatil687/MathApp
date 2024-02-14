@@ -49,45 +49,90 @@ const Signup = ({ navigation }) => {
   };
 
   // Function to handle sign up
-  const signUpHandle = async () => {
-    try {
-      // Create user in Firebase Authentication
-      const userCredential = await auth().createUserWithEmailAndPassword(
-        email,
-        password
+  // Function to handle sign up
+// Function to handle sign up
+// Function to handle sign up
+const signUpHandle = async () => {
+  try {
+    // Validate user inputs using regex
+    const nameRegex = /^[a-zA-Z]+$/; // Only alphabets allowed in name
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const passwordRegex = /^.{6,}$/;
+
+    // Check if inputs are empty
+    if (!firstName || !lastName || !email || !password) {
+      Alert.alert("Empty Fields", "Please fill in all fields.");
+      return;
+    }
+
+    // Check if name, email, and password meet regex requirements
+    if (!nameRegex.test(firstName) || !nameRegex.test(lastName)) {
+      Alert.alert("Invalid Name", "Name must contain only alphabets.");
+      return;
+    }
+
+    if (!emailRegex.test(email)) {
+      Alert.alert("Invalid Email", "Please provide a valid email address.");
+      return;
+    }
+
+    if (!passwordRegex.test(password)) {
+      Alert.alert(
+        "Invalid Password",
+        "Password must be at least 6 characters long."
       );
-      const user = userCredential.user;
-      await user.sendEmailVerification();
+      return;
+    }
+
+    // Create user in Firebase Authentication
+    const userCredential = await auth().createUserWithEmailAndPassword(
+      email,
+      password
+    );
+    const user = userCredential.user;
+    await user.sendEmailVerification();
+    
+    let imageURL; // Variable to store profile photo URL
+
+    // Check if the user selected a profile photo
+    if (profUrl.uri === require("../assets/def_prof.png").uri) {
+      // If the user didn't select a profile photo, use the default one
+      imageURL = profUrl.uri; // Default profile photo URL
+    } else {
       // Upload profile image to Firebase Storage
       const imageURI = profUrl.uri;
-      const imageName = `${user.uid}.png`; // Unique image name based on user's UID
+      const fileExtension = imageURI.substring(imageURI.lastIndexOf("."));
+      const imageName = `${user.uid}${fileExtension}`; // Use original file extension
       const response = await fetch(imageURI);
       const blob = await response.blob();
-      const ref = storage().ref().child(`profile_pic/${email}/${imageName}`);
+      const ref = storage()
+        .ref()
+        .child(`profile_pic/${email}/${imageName}`);
       await ref.put(blob);
 
       // Get the URL of the uploaded image
-      const imageURL = await ref.getDownloadURL();
-
-      // Update user profile with collected information and image URL
-      await user.updateProfile({
-        displayName: firstName + " " + lastName,
-        photoURL: imageURL, // Set profile picture URL
-      });
-
-      Alert.alert(
-        "Registration Complete",
-        "Please check your email to verify your account before signing in."
-      );
-
-      // Navigate to the login screen
-      navigation.navigate("Login");
-    } catch (error) {
-      // Handle errors
-      console.log("Error signing up: ", error.message);
-      Alert.alert("Error signing up", error.message);
+      imageURL = await ref.getDownloadURL();
     }
-  };
+
+    // Update user profile with collected information and image URL
+     user.updateProfile({
+      displayName: firstName + " " + lastName,
+      photoURL: imageURL, // Set profile picture URL
+    });
+
+    Alert.alert(
+      "Registration Complete",
+      "Please check your email to verify your account before signing in."
+    );
+
+    // Navigate to the login screen
+    navigation.navigate("Login");
+  } catch (error) {
+    // Handle errors
+    console.log("Error signing up: ", error.message);
+    Alert.alert("Error signing up", error.message);
+  }
+};
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
