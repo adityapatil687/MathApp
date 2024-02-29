@@ -13,6 +13,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   SafeAreaView,
+  Image,
 } from "react-native";
 import { TextInput } from "react-native-paper";
 
@@ -33,7 +34,7 @@ export default function Login({ navigation }) {
       webClientId:
         "1045187514628-nsqi06enmplpf40j2ika834climb1lp7.apps.googleusercontent.com",
       forceCodeForRefreshToken: true,
-      offlineAccess: true,
+     // offlineAccess: true,
     });
   }, []);
 
@@ -98,6 +99,10 @@ export default function Login({ navigation }) {
     <>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <SafeAreaView style={styles.container}>
+          <Image
+            source={require("../assets/loginArt.jpg")}
+            style={styles.loginArt}
+          />
           <View style={styles.TextInputGroup}>
             <TextInput
               label="Email"
@@ -170,5 +175,10 @@ const styles = StyleSheet.create({
   },
   signupContainer: {
     flexDirection: "row",
+  },
+  loginArt: {
+    width: 300, // Adjust width as needed
+    height: 300, // Adjust height as needed
+    resizeMode: "contain", // Or adjust resizeMode as needed
   },
 });

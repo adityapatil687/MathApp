@@ -11,6 +11,7 @@ import Video from "../Video";
 
 import {TabDisplayContext} from "../../context/TabDisplayContextProvider";
 import { useState, useContext } from "react";
+import Videos from "../Video";
 
 
 export default function TabNav({ navigation }) {
@@ -66,7 +67,7 @@ export default function TabNav({ navigation }) {
       />
       <Tab.Screen
         name="Video"
-        component={Video}
+        component={Videos}
         options={{ headerShown: false }}
       />
     </Tab.Navigator>

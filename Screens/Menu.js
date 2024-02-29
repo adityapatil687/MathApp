@@ -93,7 +93,7 @@ export default function Menu({ navigation, route }) {
       
       <View style={styles.myList}>
         <FlatList
-          style={{ }}
+         
           data={data}
           numColumns="2"
           renderItem={({ item }) => (
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
    // backgroundColor: "#ffffff",
-    marginTop: StatusBar.currentHeight
+   // marginTop: StatusBar.currentHeight
   },
   myList: {
     alignItems: "center",

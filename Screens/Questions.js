@@ -1,49 +1,83 @@
+import React, { useState, useEffect, useRef } from "react";
 import {
   Text,
-  StatusBar,
   View,
   StyleSheet,
-  Pressable,
-  AppState,
   TextInput,
   Button,
   TouchableWithoutFeedback,
-  Keyboard,
   KeyboardAvoidingView,
+  Keyboard,
 } from "react-native";
-import { useState, useEffect, useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Questions({ navigation, route }) {
+  // State variables
   const { mode } = route.params;
   const { operation } = route.params;
-
   const [digits, setDigits] = useState(parseInt(route.params.digits));
   const [timeGap, setTimeGap] = useState(parseInt(route.params.timeGap)); //ms
   const [operands, setOperands] = useState(parseInt(route.params.operands));
   const [floatLen, setFloatLen] = useState(route.params.floatDigit);
-
   const [questionCounter, setQuestionCounter] = useState(1);
   const [randNumberArr, setRandNumArr] = useState([]);
-
   const [currentIndex, setCurrentIndex] = useState(0);
-
   const [answer, setAnswer] = useState(0);
   const [enteredAnswer, setEnteredAnswer] = useState(0);
   const [isBtnPressed, setButtonPressed] = useState(false);
   const [answerTimeout, setAnswerTimeout] = useState(2000); //ms
-
-  //const [operation, setOperation] = useState(JSON.stringify(route.params.operation));
-
   const textInputRef = useRef(null);
 
-  const handleClear = () => {
+  // Helper functions
+  function getInt(len) {
+    var min = Math.pow(10, len - 1);
+    var max = Math.pow(10, len) - 1;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  function getFloat(digitsBeforeDecimal, digitsAfterDecimal) {
+    const minBeforeDecimal = Math.pow(10, digitsBeforeDecimal - 1);
+    const maxBeforeDecimal = Math.pow(10, digitsBeforeDecimal) - 1;
+    const minAfterDecimal = Math.pow(10, digitsAfterDecimal - 1);
+    const maxAfterDecimal = Math.pow(10, digitsAfterDecimal) - 1;
+    const randomNumberBeforeDecimal = Math.floor(
+      Math.random() * (maxBeforeDecimal - minBeforeDecimal + 1) +
+        minBeforeDecimal
+    );
+    const randomNumberAfterDecimal = Math.floor(
+      Math.random() * (maxAfterDecimal - minAfterDecimal + 1) + minAfterDecimal
+    );
+    const randomDecimalPart =
+      digitsAfterDecimal > 0 ? `.${randomNumberAfterDecimal}` : "";
+    return parseFloat(`${randomNumberBeforeDecimal}${randomDecimalPart}`);
+  }
+
+  function handleClear() {
     if (textInputRef.current) {
       textInputRef.current.clear();
     }
-  };
+  }
 
-  // push element in array or load new question
+  useEffect(() => {
+    console.log("////////////////////////////////////////////");
+    console.log("");
+    console.log("Number of digits => ", digits);
+    console.log("Operation => ", operation);
+    console.log("Mode => ", mode);
+    console.log("opearands => ", operands);
+    console.log("Time gap => ", timeGap);
+    console.log("Float length => ", floatLen);
+    console.log("");
+    console.log("////////////////////////////////////////////");
+  });
+
+  // useEffect(() => {
+  //   if (operation === "Division") {
+  //     setOperands(2);
+  //   }
+  // }, []);
+
+  // useEffect hooks
   useEffect(() => {
     let num = [];
     setCurrentIndex(0);
@@ -51,22 +85,38 @@ export default function Questions({ navigation, route }) {
     setButtonPressed(false);
     if (questionCounter <= 15) {
       if (
-        operation == "Cube" ||
-        operation == "Square Root" ||
-        operation == "Cube Root" ||
-        operation == "Square"
+        operation === "Cube" ||
+        operation === "Square Root" ||
+        operation === "Cube Root" ||
+        operation === "Square"
       ) {
-        if (mode == "Perfect Number") {
+        if (mode === "Perfect Number") {
           num.push(getInt(digits));
         } else {
-          num.push(getFloat(digits,floatLen));
+          num.push(getFloat(digits, floatLen));
+        }
+      } else if (operation === "Division") {
+        if (mode === "Perfect Number") {
+          const operand1 = getInt(digits);
+          let operand2;
+          do {
+            operand2 = getInt(digits);
+          } while (operand2 === 0); // Ensure operand2 is not zero
+          num.push(operand1, operand2);
+        } else {
+          const operand1 = getFloat(digits, floatLen);
+          let operand2;
+          do {
+            operand2 = getFloat(digits, floatLen);
+          } while (operand2 === 0); // Ensure operand2 is not zero
+          num.push(operand1, operand2);
         }
       } else {
         for (let i = 0; i < operands; i++) {
-          if (mode == "Perfect Number") {
+          if (mode === "Perfect Number") {
             num.push(getInt(digits));
           } else {
-             num.push(getFloat(digits, floatLen));
+            num.push(getFloat(digits, floatLen));
           }
         }
       }
@@ -74,23 +124,18 @@ export default function Questions({ navigation, route }) {
     }
   }, [questionCounter]);
 
-  // console print
   useEffect(() => {
-    if (randNumberArr.length > 0) {
-      console.log("Array Elements => " + randNumberArr);
-    }
+    console.log("Array Elements => " + randNumberArr);
     console.log("Question Counter => " + questionCounter);
   }, [randNumberArr, questionCounter]);
 
-  // iterate for displaying
   useEffect(() => {
     if (
-      operation == "Cube" ||
-      operation == "Square Root" ||
-      operation == "Cube Root" ||
-      operation == "Square"
+      operation !== "Cube" &&
+      operation !== "Square Root" &&
+      operation !== "Cube Root" &&
+      operation !== "Square"
     ) {
-    } else {
       if (currentIndex < randNumberArr.length - 1) {
         const timer = setTimeout(() => {
           setCurrentIndex((prevIndex) => prevIndex + 1);
@@ -103,18 +148,16 @@ export default function Questions({ navigation, route }) {
     }
   }, [currentIndex, randNumberArr.length]);
 
-  // read current index
-  // useEffect(() => {
-  //   console.log(currentIndex);
-  // }, [currentIndex]);
+  useEffect(() => {
+    console.log("Current Index => ", currentIndex);
+  }, [currentIndex]);
 
-  //calculate answer
+  // Function to calculate answer
   function calAns() {
     let res = 0;
-    // console.log(typeof(operation));
     switch (route.params.operation) {
-      case "Addition": // 1
-        if (randNumberArr.length == operands) {
+      case "Addition":
+        if (randNumberArr.length === operands) {
           for (let i = 0; i < randNumberArr.length; i++) {
             res = res + randNumberArr[i];
           }
@@ -124,50 +167,50 @@ export default function Questions({ navigation, route }) {
         }
         break;
 
-      case "Cube": // 2
+      case "Cube":
         res = Math.pow(randNumberArr[0], 3);
+        res = parseFloat(res.toFixed(2)); // Round to 4 decimal places
         setAnswer(res);
         setButtonPressed(true);
         console.log(`${route.params.operation} => ` + res);
-
         break;
 
-      case "Division": // 3
-        if (randNumberArr.length == operands) {
-          for (let i = 0; i < randNumberArr.length; i++) {
-            res = res + randNumberArr[i];
-          }
-          setAnswer(res);
+      case "Division":
+        if (randNumberArr.length === operands) {
+          const quotient = randNumberArr[0] / randNumberArr[1];
+          const roundedQuotient = parseFloat(quotient.toFixed(2)); // Round to 4 decimal places
+          setAnswer(roundedQuotient);
           setButtonPressed(true);
-          console.log(`${route.params.operation} => ` + res);
+          console.log(`${route.params.operation} => ` + roundedQuotient);
         }
+
         break;
 
-      case "Square Root": // 4
+      case "Square Root":
         res = Math.sqrt(randNumberArr[0]).toFixed(2);
         setAnswer(res);
         setButtonPressed(true);
         console.log(`${route.params.operation} => ` + res);
         break;
 
-      case "Cube Root": // 5
-        res = Math.cbrt(randNumberArr[0]);
+      case "Cube Root":
+        res = Math.cbrt(randNumberArr[0]).toFixed(2);
         setAnswer(res);
         setButtonPressed(true);
         console.log(`${route.params.operation} => ` + res);
         break;
 
-      case "Square": // 6
+      case "Square":
         res = Math.pow(randNumberArr[0], 2);
         setAnswer(res);
         setButtonPressed(true);
         console.log(`${route.params.operation} => ` + res);
         break;
 
-      case "Subtraction": // 7
-        if (randNumberArr.length == operands) {
+      case "Subtraction":
+        if (randNumberArr.length === operands) {
           for (let i = 0; i < randNumberArr.length; i++) {
-            if (i == 0) {
+            if (i === 0) {
               res = randNumberArr[i];
             } else {
               res = res - randNumberArr[i];
@@ -179,10 +222,11 @@ export default function Questions({ navigation, route }) {
         }
         break;
 
-      case "Multiplication": // 8 (Not implemented) Change Formula
-        if (randNumberArr.length == operands) {
+      case "Multiplication":
+        if (randNumberArr.length === operands) {
+          res = 1; // Initialize result to 1 for multiplication
           for (let i = 0; i < randNumberArr.length; i++) {
-            res = res + randNumberArr[i];
+            res = res * randNumberArr[i]; // Multiply each operand
           }
           setAnswer(res);
           setButtonPressed(true);
@@ -190,14 +234,14 @@ export default function Questions({ navigation, route }) {
         }
         break;
 
-      case "Percentage": // 9 (Not implemented) Change Formula
-        if (randNumberArr.length == operands) {
-          for (let i = 0; i < randNumberArr.length; i++) {
-            res = res + randNumberArr[i];
-          }
-          setAnswer(res);
+      case "Percentage":
+        if (randNumberArr.length === operands) {
+          const part = randNumberArr[0]; // Get the first operand as the part
+          const whole = randNumberArr[1]; // Get the second operand as the whole
+          const percentage = (part / whole) * 100; // Calculate the percentage
+          setAnswer(percentage.toFixed(2));
           setButtonPressed(true);
-          console.log(`${route.params.operation} => ` + res);
+          console.log(`${route.params.operation} => ` + percentage);
         }
         break;
 
@@ -206,21 +250,19 @@ export default function Questions({ navigation, route }) {
     }
 
     const isCorrect =
-    (currentIndex === operands - 1 && isBtnPressed && enteredAnswer == answer) ||
-    (isBtnPressed && enteredAnswer == answer);
+      (currentIndex === operands - 1 &&
+        isBtnPressed &&
+        enteredAnswer == answer) ||
+      (isBtnPressed && enteredAnswer == answer);
 
-  // Set the background color based on the correctness
-  // setBgColor(isCorrect ? "green" : "red");
+    if (!isCorrect) {
+      console.log("Answer is correct!");
+      // Handle correct answer logic here
+    } else {
+      console.log("Answer is incorrect!");
+      // Handle incorrect answer logic here
+    }
 
-  if (isCorrect) {
-    console.log("Answer is correct!");
-    // Handle correct answer logic here
-  } else {
-    console.log("Answer is incorrect!");
-    // Handle incorrect answer logic here
-  }
-
-    // console.log(randNumberArr.length);
     if (questionCounter < 15) {
       console.log(questionCounter);
       const timer = setTimeout(() => {
@@ -230,77 +272,40 @@ export default function Questions({ navigation, route }) {
         clearTimeout(timer);
       };
     } else {
-      alert("Attempetd 15/15");
+      alert("Attempted 15/15");
     }
   }
 
-  function getInt(len) {
-    var min = Math.pow(10, len - 1);
-    var max = Math.pow(10, len) - 1;
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-
-  function getFloat(digitsBeforeDecimal, digitsAfterDecimal) {
-    const minBeforeDecimal = Math.pow(10, digitsBeforeDecimal - 1);
-    const maxBeforeDecimal = Math.pow(10, digitsBeforeDecimal) - 1;
-  
-    const minAfterDecimal = Math.pow(10, digitsAfterDecimal - 1);
-    const maxAfterDecimal = Math.pow(10, digitsAfterDecimal) - 1;
-  
-    const randomNumberBeforeDecimal = Math.floor(
-      Math.random() * (maxBeforeDecimal - minBeforeDecimal + 1) + minBeforeDecimal
-    );
-  
-    const randomNumberAfterDecimal = Math.floor(
-      Math.random() * (maxAfterDecimal - minAfterDecimal + 1) + minAfterDecimal
-    );
-  
-    const randomDecimalPart =
-      digitsAfterDecimal > 0 ? `.${randomNumberAfterDecimal}` : '';
-  
-    return parseFloat(`${randomNumberBeforeDecimal}${randomDecimalPart}`);
-  }
-
+  // JSX
   return (
     <>
-    
-      <TouchableWithoutFeedback
-        onPress={Keyboard.dismiss}
-        style={styles.container}
-      >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <SafeAreaView style={styles.container}>
           <Text style={styles.questionLable}>
             Questions {questionCounter}/15
           </Text>
           <Text style={styles.myOperand}>{randNumberArr[currentIndex]}</Text>
-
-          {(currentIndex == operands - 1 &&
-            isBtnPressed == true &&
+          {(currentIndex === operands - 1 &&
+            isBtnPressed === true &&
             enteredAnswer == answer) ||
-          (isBtnPressed == true && enteredAnswer == answer) ? (
+          (isBtnPressed === true && enteredAnswer == answer) ? (
             <Text style={{ textAlign: "center" }}>Correct </Text>
           ) : (
             <></>
           )}
-          {(currentIndex == operands - 1 &&
-            isBtnPressed == true &&
+          {(currentIndex === operands - 1 &&
+            isBtnPressed === true &&
             enteredAnswer != answer) ||
-          (isBtnPressed == true && enteredAnswer != answer) ? (
+          (isBtnPressed === true && enteredAnswer != answer) ? (
             <Text style={{ textAlign: "center" }}>
-              Correct answer is {answer}{" "}
+              Your answer is incorrect. Correct answer is {answer}{" "}
             </Text>
           ) : (
             <></>
           )}
-
         </SafeAreaView>
       </TouchableWithoutFeedback>
-          {/*  Answer Box */}
-      {currentIndex == operands - 1 &&
-      (operation != "Cube" ||
-        operation != "Square Root" ||
-        operation != "Cube Root" ||
-        operation != "Square") ? (
+      {currentIndex === operands - 1 && (
         <KeyboardAvoidingView style={styles.myInputContainer}>
           <TextInput
             ref={textInputRef}
@@ -308,46 +313,46 @@ export default function Questions({ navigation, route }) {
               setEnteredAnswer(txt);
             }}
             style={styles.myInput}
-            placeholder="Enter a answer"
+            placeholder="Enter an answer"
             keyboardType="numeric"
             placeholderTextColor="grey"
           />
           <Button
             color="#007AFF"
             style={styles.btnStyle}
-            title="submit"
+            title="Submit"
             onPress={() => {
               calAns();
               handleClear();
             }}
           />
         </KeyboardAvoidingView>
-      ) : (
-        (operation == "Cube" ||
-          operation == "Square Root" ||
-          operation == "Cube Root" ||
-          operation == "Square") && (
-          <KeyboardAvoidingView style={styles.myInputContainer}>
-            <TextInput
-              ref={textInputRef}
-              onChangeText={(txt) => {
-                setEnteredAnswer(txt);
-              }}
-              style={styles.myInput}
-              placeholder="Enter a answer"
-              keyboardType="numeric"
-              placeholderTextColor="grey"
-            />
-            <Button
-              style={styles.btnStyle}
-              title="submit"
-              onPress={() => {
-                calAns();
-                handleClear();
-              }}
-            />
-          </KeyboardAvoidingView>
-        )
+      )}
+      {(operation === "Cube" ||
+        operation === "Square Root" ||
+        operation === "Cube Root" ||
+        operation === "Square") && (
+        <KeyboardAvoidingView style={styles.myInputContainer}>
+          <TextInput
+            ref={textInputRef}
+            onChangeText={(txt) => {
+              setEnteredAnswer(txt);
+            }}
+            style={styles.myInput}
+            placeholder="Enter an answer"
+            keyboardType="numeric"
+            placeholderTextColor="grey"
+          />
+          <Button
+            color="#007AFF"
+            style={styles.btnStyle}
+            title="Submit"
+            onPress={() => {
+              calAns();
+              handleClear();
+            }}
+          />
+        </KeyboardAvoidingView>
       )}
     </>
   );

@@ -8,7 +8,7 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
-  Platform
+  Platform,
 } from "react-native";
 import { useState, useContext, useEffect } from "react";
 
@@ -23,14 +23,16 @@ export default function Configure({ navigation, route }) {
 
   function loginInBtnEvent() {
     if (
-      operation != "Cube" &&
-      operation != "Square Root" &&
-      operation != "Cube Root" &&
-      operation != "Square"
+      operation !== "Cube" &&
+      operation !== "Square Root" &&
+      operation !== "Cube Root" &&
+      operation !== "Square" &&
+      operation !== "Division" &&
+      operation !== "Percentage"
     ) {
-      if ((digits > 0 || floatDigit > 0) && timeGap > 0 && operands > 0) {
-        if (mode == "Perfect Number") {
-          if (digits <= 21) {
+      if (digits > 0 && timeGap > 0 && operands > 0) {
+        if (mode === "Perfect Number") {
+          if (parseInt(digits) <= 21) {
             navigation.navigate("Questions", {
               digits: digits,
               timeGap: timeGap,
@@ -42,8 +44,14 @@ export default function Configure({ navigation, route }) {
           } else {
             alert("Length cannot be more than 21 " + operation);
           }
-        } else if (mode == "Float Number") {
-          if (digits <= 5 && floatDigit <= 5) {
+        } else if (mode === "Float Number") {
+          if (
+            parseInt(digits) &&
+            parseInt(floatDigit) &&
+            parseInt(digits) <= 5 &&
+            parseInt(floatDigit) <= 5 &&
+            parseInt(floatDigit) !== 0 // Check if floatDigit is not 0
+          ) {
             navigation.navigate("Questions", {
               digits: digits,
               timeGap: timeGap,
@@ -53,29 +61,38 @@ export default function Configure({ navigation, route }) {
               floatDigit: floatDigit,
             });
           } else {
-            alert("Length cannot be more than 5");
+            alert("Length cannot be more than 5 or fill the data");
           }
         }
       } else {
-        alert("Enter Data");
+        alert("Enter Data 1");
       }
     } else {
-      if (digits > 0 && timeGap > 0) {
-        if (mode == "Perfect Number") {
-          if (digits <= 21) {
-            navigation.navigate("Questions", {
-              digits: digits,
-              timeGap: timeGap,
-              operands: operands,
-              mode: mode,
-              operation: operation,
-              floatDigit: floatDigit,
-            });
+      if (operation !== "Division" && operation !== "Percentage") {
+        if (mode === "Perfect Number") {
+          if (digits > 0) {
+            if (parseInt(digits) <= 21) {
+              navigation.navigate("Questions", {
+                digits: digits,
+                timeGap: timeGap,
+                operands: operands,
+                mode: mode,
+                operation: operation,
+                floatDigit: floatDigit,
+              });
+            } else {
+              alert("Length cannot be more than 21");
+            }
           } else {
-            alert("Length cannot be more than 21");
+            alert("Fill data");
           }
-        } else if (mode == "Float Number") {
-          if (digits <= 5 && floatDigit <= 5) {
+        } else {
+          if (
+            parseInt(digits) > 0 &&
+            parseInt(floatDigit) > 0 &&
+            parseInt(digits) <= 5 &&
+            parseInt(floatDigit) <= 5
+          ) {
             navigation.navigate("Questions", {
               digits: digits,
               timeGap: timeGap,
@@ -85,11 +102,40 @@ export default function Configure({ navigation, route }) {
               floatDigit: floatDigit,
             });
           } else {
-            alert("Length cannot be more than 5");
+            alert("Length cannot be more than 5 or fill the data");
           }
         }
       } else {
-        alert("Enter Data");
+        if (mode === "Perfect Number") {
+          if (digits > 0 && timeGap > 0) {
+            navigation.navigate("Questions", {
+              digits: digits,
+              timeGap: timeGap,
+              operands: 2,
+              mode: mode,
+              operation: operation,
+              floatDigit: floatDigit,
+            });
+          } else {
+            alert("Enter data");
+          }
+        } else if (
+          parseInt(digits) > 0 &&
+          parseInt(floatDigit) > 0 &&
+          parseInt(digits) <= 5 &&
+          parseInt(floatDigit) <= 5
+        ) {
+          navigation.navigate("Questions", {
+            digits: digits,
+            timeGap: timeGap,
+            operands: 2,
+            mode: mode,
+            operation: operation,
+            floatDigit: floatDigit,
+          });
+        } else {
+          alert("Enter Data 4");
+        }
       }
     }
   }
@@ -122,7 +168,6 @@ export default function Configure({ navigation, route }) {
         style={styles.container}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        
         <View style={styles.fromTop}>
           <Text style={styles.myLable}>Number of Digits</Text>
           <View style={styles.innerContainer}>
@@ -148,21 +193,34 @@ export default function Configure({ navigation, route }) {
               </View>
             </>
           )}
+          {operation !== "Cube" &&
+            operation !== "Square Root" &&
+            operation !== "Cube Root" &&
+            operation !== "Square" && (
+              <>
+                <Text style={styles.myLable}>Time Gap (ms)</Text>
+                <View style={styles.innerContainer}>
+                  <TextInput
+                    keyboardType="numeric"
+                    onChangeText={(val) => setTimeGap(val)}
+                    style={styles.myInput}
+                    placeholder="enter value"
+                    placeholderTextColor="grey"
+                  />
+                </View>
+              </>
+            )}
 
-          <Text style={styles.myLable}>Time Gap (ms)</Text>
-          <View style={styles.innerContainer}>
-            <TextInput
-              keyboardType="numeric"
-              onChangeText={(val) => setTimeGap(val)}
-              style={styles.myInput}
-              placeholder="enter value"
-              placeholderTextColor="grey"
-            />
-          </View>
-          {operation == "Cube" ||
-            operation == "Square Root" ||
-            operation == "Cube Root" ||
-            operation == "Square" || (
+          {/* operation === "Cube" ||
+            operation === "Square Root" ||
+            operation === "Cube Root" ||
+            (operation === "Square"  */}
+          {operation !== "Square Root" &&
+            operation !== "Cube" &&
+            operation !== "Cube Root" &&
+            operation !== "Square" &&
+            operation !== "Division" &&
+            operation !== "Percentage" && (
               <>
                 <Text style={styles.myLable}>No. of Operands</Text>
                 <View style={styles.innerContainer}>
@@ -176,6 +234,7 @@ export default function Configure({ navigation, route }) {
                 </View>
               </>
             )}
+
           <View style={styles.btnContainer}>
             <MyButton
               title="START"
