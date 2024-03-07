@@ -1,15 +1,30 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator, SafeAreaView } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  ActivityIndicator,
+  SafeAreaView,
+} from "react-native";
 import { StatusBar } from "react-native";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 const ChatBot = () => {
-  const genAI = new GoogleGenerativeAI("AIzaSyDdlrlZWPvQwCMU6KonxOY79Rw-gFYtLcA"); // Replace with your actual API key
+  const genAI = new GoogleGenerativeAI(
+    "AIzaSyDdlrlZWPvQwCMU6KonxOY79Rw-gFYtLcA"
+  ); // Replace with your actual API key
   const [text, updateText] = useState("");
   const [chatData, updateChatData] = useState([
-    { message: 'Welcome to the ChatBot!', id: '0', style: styles.serverSide, bubble: styles.serverMessage },
+    {
+      message: "Welcome to the ChatBot!",
+      id: "0",
+      style: styles.serverSide,
+      bubble: styles.serverMessage,
+    },
   ]);
   const [isLoading, setIsLoading] = useState(false);
-
 
   const generateResponse = async (input) => {
     try {
@@ -55,52 +70,55 @@ const ChatBot = () => {
   };
 
   return (
-    <View style={styles.container}>
-      
-      <SafeAreaView style={{ flex: 1 }}>
-        {/* Chats */}
-        <FlatList
-          data={chatData}
-          keyExtractor={(item) => item.id.toString()}
-          inverted={true}
-          renderItem={({ item }) => (
-            <View style={item.style}>
-              <Text style={item.bubble}>{item.message}</Text>
-            </View>
-          )}
-        />
-
-        {/* Text input */}
-        <View style={{ backgroundColor: "#fafafa", borderColor: "grey" }}>
-          <View
-            style={{
-              height: 50,
-              marginHorizontal: 10,
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <TextInput
-              placeholder="Type a message"
-              style={styles.input}
-              placeholderTextColor="#8D8D8D"
-              onChangeText={(value) => updateText(value)}
-              value={text}
-            />
-            <TouchableOpacity onPress={submitHandler} disabled={isLoading}>
-              <View style={styles.sendButton}>
-                {isLoading ? (
-                  <ActivityIndicator size="small" color="white" />
-                ) : (
-                  <Text style={{ color: "white" }}>Send</Text>
-                )}
-              </View>
-            </TouchableOpacity>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: "#fff",
+        marginTop: StatusBar.currentHeight,
+      }}
+    >
+      {/* Chats */}
+      <FlatList
+        data={chatData}
+        keyExtractor={(item) => item.id.toString()}
+        inverted={true}
+        renderItem={({ item }) => (
+          <View style={item.style}>
+            <Text style={item.bubble}>{item.message}</Text>
           </View>
+        )}
+      />
+
+      {/* Text input */}
+      <View style={{ backgroundColor: "#fafafa", borderColor: "grey" }}>
+        <View
+          style={{
+            height: 50,
+            marginHorizontal: 10,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <TextInput
+            placeholder="Type a message"
+            style={styles.input}
+            placeholderTextColor="#8D8D8D"
+            onChangeText={(value) => updateText(value)}
+            value={text}
+          />
+          <TouchableOpacity onPress={submitHandler} disabled={isLoading}>
+            <View style={styles.sendButton}>
+              {isLoading ? (
+                <ActivityIndicator size="small" color="white" />
+              ) : (
+                <Text style={{ color: "white" }}>Send</Text>
+              )}
+            </View>
+          </TouchableOpacity>
         </View>
-      </SafeAreaView>
-    </View>
+      </View>
+    </SafeAreaView>
   );
 };
 
@@ -129,7 +147,7 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: 15,
     textAlign: "left",
-    backgroundColor: "#006A5D",
+    backgroundColor: "#924CFC",
     borderRadius: 10,
     margin: 5,
   },
@@ -143,7 +161,7 @@ const styles = StyleSheet.create({
     color: "black",
   },
   sendButton: {
-    backgroundColor: "#006A5D",
+    backgroundColor: "#924CFC",
     padding: 10,
     borderRadius: 100,
     alignItems: "center",
