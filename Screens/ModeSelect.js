@@ -42,13 +42,13 @@ export default function ModeSelect({ navigation, route }) {
           <Text style={styles.modeSelectLabel}>Select one type</Text>
           <View style={styles.choiceHorizontal}>
             <Card
-              txt="Perfect Number"
+              txt="Integer"
               symbol="3"
               color="#4596F2"
               navScreenFunction={navScreenFunction}
             />
             <Card
-              txt="Float Number"
+              txt="Float"
               symbol="0.5"
               color="#4596F2"
               navScreenFunction={navScreenFunction}

@@ -107,6 +107,7 @@ export default function Login({ navigation }) {
             <TextInput
               label="Email"
               mode="outlined"
+              activeOutlineColor="#296ab3"
               style={styles.InputEmail}
               onChangeText={(text) => setEmail(text)}
             />

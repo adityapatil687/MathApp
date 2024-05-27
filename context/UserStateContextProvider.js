@@ -9,13 +9,13 @@ const UserStateContextProvider = ({ children }) => {
   }, [isSignedIn]);
   useEffect(() => {
     // Check if user is already signed in
-    const unsubscribe = auth().onAuthStateChanged((user) => {
-      if (user) {
-        setIsSignedIn(true);
-      } else {
-        setIsSignedIn(false);
-      }
-    });
+    // const unsubscribe = auth().onAuthStateChanged((user) => {
+    //   if (user) {
+    //     setIsSignedIn(true);
+    //   } else {
+    //     setIsSignedIn(false);
+    //   }
+    // });
 
     return () => unsubscribe();
   }, []);
