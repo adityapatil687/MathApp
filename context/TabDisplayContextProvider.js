@@ -6,7 +6,7 @@ const TabDisplayContextProvider = ({ children }) => {
   const [tabDisplay, setTabDisplay] = useState("flex");
   const [headerState, setHeaderState] = useState(true);
   useEffect(() => {
-    console.log(tabDisplay);
+    //console.log(tabDisplay);
   }, [tabDisplay]);
   return (
     <TabDisplayContext.Provider value={{ tabDisplay, setTabDisplay, headerState, setHeaderState }}>

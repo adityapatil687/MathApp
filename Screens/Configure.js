@@ -31,7 +31,7 @@ export default function Configure({ navigation, route }) {
       operation !== "Percentage"
     ) {
       if (digits > 0 && timeGap > 0 && operands > 0) {
-        if (mode === "Perfect Number") {
+        if (mode === "Integer") {
           if (parseInt(digits) <= 21) {
             navigation.navigate("Questions", {
               digits: digits,
@@ -44,7 +44,7 @@ export default function Configure({ navigation, route }) {
           } else {
             alert("Length cannot be more than 21 " + operation);
           }
-        } else if (mode === "Float Number") {
+        } else if (mode === "Float") {
           if (
             parseInt(digits) &&
             parseInt(floatDigit) &&
@@ -69,7 +69,7 @@ export default function Configure({ navigation, route }) {
       }
     } else {
       if (operation !== "Division" && operation !== "Percentage") {
-        if (mode === "Perfect Number") {
+        if (mode === "Integer") {
           if (digits > 0) {
             if (parseInt(digits) <= 21) {
               navigation.navigate("Questions", {
@@ -106,7 +106,7 @@ export default function Configure({ navigation, route }) {
           }
         }
       } else {
-        if (mode === "Perfect Number") {
+        if (mode === "Integer") {
           if (digits > 0 && timeGap > 0) {
             navigation.navigate("Questions", {
               digits: digits,
@@ -141,7 +141,7 @@ export default function Configure({ navigation, route }) {
   }
 
   // function printData() {
-  //   if (mode != "Float Number") {
+  //   if (mode != "Float") {
   //     console.log({
   //       digits: digits,
   //       timeGap: timeGap,
@@ -179,7 +179,7 @@ export default function Configure({ navigation, route }) {
               placeholderTextColor="grey"
             />
           </View>
-          {mode == "Float Number" && (
+          {mode == "Float" && (
             <>
               <Text style={styles.myLable}>Precision</Text>
               <View style={styles.innerContainer}>

@@ -5,7 +5,7 @@ const UserStateContext = createContext();
 const UserStateContextProvider = ({ children }) => {
   const [isSignedIn, setIsSignedIn] = useState(false);
   useEffect(() => {
-    console.log(isSignedIn);
+   // console.log(isSignedIn);
   }, [isSignedIn]);
   useEffect(() => {
     // Check if user is already signed in

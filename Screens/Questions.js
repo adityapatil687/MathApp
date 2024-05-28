@@ -90,13 +90,13 @@ export default function Questions({ navigation, route }) {
         operation === "Cube Root" ||
         operation === "Square"
       ) {
-        if (mode === "Perfect Number") {
+        if (mode === "Integer") {
           num.push(getInt(digits));
         } else {
           num.push(getFloat(digits, floatLen));
         }
       } else if (operation === "Division") {
-        if (mode === "Perfect Number") {
+        if (mode === "Integer") {
           const operand1 = getInt(digits);
           let operand2;
           do {
@@ -113,7 +113,7 @@ export default function Questions({ navigation, route }) {
         }
       } else {
         for (let i = 0; i < operands; i++) {
-          if (mode === "Perfect Number") {
+          if (mode === "Integer") {
             num.push(getInt(digits));
           } else {
             num.push(getFloat(digits, floatLen));

@@ -18,7 +18,7 @@ export default function ModeSelect({ navigation, route }) {
   const { headerState, setHeaderState } = useContext(TabDisplayContext);
 
   const navScreenFunction = (str) => {
-    if (str == "Perfect Number" || str == "Float Number") {
+    if (str == "Integer" || str == "Float") {
       navigation.navigate("Configure", {
         mode: str,
         operation: operation,

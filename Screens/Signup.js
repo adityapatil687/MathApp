@@ -150,12 +150,14 @@ const Signup = ({ navigation }) => {
           <TextInput
             label="First Name"
             mode="outlined"
+            activeOutlineColor="#296ab3"
             style={styles.input}
             onChangeText={(text) => setFirstName(text)}
           />
           <TextInput
             label="Last Name"
             mode="outlined"
+            activeOutlineColor="#296ab3"
             style={styles.input}
             onChangeText={(text) => setLastName(text)}
           />

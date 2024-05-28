@@ -5,7 +5,7 @@ export const UserDataContext = createContext();
 const UserDataContextProvider = ({ children }) => {
   const [userData, setUserData] = useState("");
   useEffect(() => {
-    console.log(userData);
+    //console.log(userData);
   }, [userData]);
   return (
     <UserDataContext.Provider value={{ userData, setUserData }}>
